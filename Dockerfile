@@ -2,9 +2,8 @@ FROM centos:7
 MAINTAINER Samuel Terburg <sterburg@hoolia.eu>
 EXPOSE 5000 2222 4730 5666
 
-# -- prepare OMD start by Ansible
 COPY ansible_omd /root/ansible_omd
-ADD entrypoint.sh /usr/local/bin/
+ADD  bin/        /usr/local/bin/
 
 ENV OMD_SITE=prod \
     OMD_PROD=/opt/omd/sites/${OMD_SITE} \
@@ -29,10 +28,12 @@ RUN sed -i 's|echo "on"$|echo "off"|' /opt/omd/versions/default/lib/omd/hooks/TM
     omd config "${OMD_SITE}" set APACHE_TCP_ADDR 0.0.0.0 && \
     omd config "${OMD_SITE}" set APACHE_TCP_PORT 5000 && \
     echo "root"  | passwd --stdin root && \
-    echo "admin" | passwd --stdin "${OMD_SITE}"
+    echo "admin" | passwd --stdin "${OMD_SITE}" && \
+    find / -user prod   -exec chmod a+rwX {} \; && \
+    find / -user apache -exec chmod a+rwX {} \;
 
 #USER ${OMD_SITE}
-USER 1001
+USER 998
 
 WORKDIR ${OMD_PROD}
 CMD /usr/local/bin/entrypoint.sh
