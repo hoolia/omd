@@ -28,8 +28,8 @@ RUN sed -i 's|echo "on"$|echo "off"|' /opt/omd/versions/default/lib/omd/hooks/TM
     omd create "${OMD_SITE}" && \
     omd config "${OMD_SITE}" set APACHE_TCP_ADDR 0.0.0.0 && \
     omd config "${OMD_SITE}" set APACHE_TCP_PORT 5000 && \
-    echo "root" | passwd --stdin root && \
-    echo "${OMD_SITE}" | passwd --stdin admin
+    echo "root"  | passwd --stdin root && \
+    echo "admin" | passwd --stdin "${OMD_SITE}"
 
 #USER ${OMD_SITE}
 USER 1001
